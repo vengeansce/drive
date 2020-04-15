@@ -1,18 +1,36 @@
-import React, { useEffect } from 'react';
-import { firebase } from 'config/firebase';
+import React, { useEffect, useState, useMemo } from 'react';
+import db, { firebase } from 'config/firebase';
+
+const initialState = {
+  user: {
+    length: 0,
+  },
+};
 
 const Context = React.createContext();
 export function Provider({ children }) {
+  const [user, setUser] = useState(initialState.user);
+  const dispatch = useMemo(
+    () => ({
+      user: (payload) => setUser(payload),
+    }),
+    []
+  );
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        console.log('redirect kalo lagin dilogin/register');
-      } else {
-        console.log('user null');
-      }
+        const ref = db.ref('users').child(user.uid);
+        ref.once('value').then((snapshot) => {
+          const val = snapshot.val();
+          const length = Object.keys(val).length;
+          setUser({ ...val, length });
+        });
+      } else setUser(initialState.user);
     });
   }, []);
-  return <Context.Provider>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={{ user, dispatch }}>{children}</Context.Provider>
+  );
 }
 
 export default Context;

@@ -21,10 +21,7 @@ export default function Login() {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then((res) => {
-        console.log(res);
-        handleProgress.end();
-      })
+      .then(() => handleProgress.end())
       .catch(() => handleProgress.error());
   };
 

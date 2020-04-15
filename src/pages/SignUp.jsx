@@ -36,20 +36,33 @@ export default function Login() {
           .auth()
           .createUserWithEmailAndPassword(email, password)
           .then(({ user }) => {
-            user.updateProfile({ displayName: user.email.split('@', 1)[0] });
-            return user;
+            const displayName = user.email.split('@', 1)[0];
+            user.updateProfile({ displayName });
+            return { user, displayName };
           })
-          .then((user) => {
-            db.ref('users/' + user.uid).set({ role: 'crud' });
+          .then(({ user, displayName }) => {
+            // db.ref('users/' + user.uid).set({ role: 2, email: user.email, displayName }); //Hapus user
+            // db.ref('users/' + user.uid).set({ role: 1, email: user.email, displayName }); //Olah permission
+            db.ref('users/' + user.uid).set({
+              permissions: {
+                create: false,
+                read: false,
+                update: false,
+                delete: false,
+              },
+              role: 0,
+              email: user.email,
+              displayName,
+            });
             return;
           })
           .then(() => handleProgress.end())
+          .then(() => window.location.replace('/'))
           .catch((err) => {
-            console.log(err);
             if (err && err.code == 'auth/email-already-in-use') {
               setErrorMessage('The email already registered.');
-              handleProgress.error();
             }
+            handleProgress.error();
           });
       }
     },
