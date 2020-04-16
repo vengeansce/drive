@@ -27,6 +27,7 @@ export default function Login() {
       if (password.length < 6) {
         setErrorMessage('Password too weak, should be at least 6 characters.');
         handleProgress.error();
+        //  eslint-disable-next-line eqeqeq
       } else if (password != confirmPassword) {
         setErrorMessage('Confirm password tidak sama.');
         handleProgress.error();
@@ -69,6 +70,7 @@ export default function Login() {
           .then(() => handleProgress.end())
           .then(() => window.location.replace('/'))
           .catch((err) => {
+            //  eslint-disable-next-line eqeqeq
             if (err && err.code == 'auth/email-already-in-use') {
               setErrorMessage('The email already registered.');
             }
@@ -76,6 +78,7 @@ export default function Login() {
           });
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [email, password, confirmPassword]
   );
 

@@ -67,6 +67,7 @@ export default function Home() {
           <tbody className="bg-white">
             {Object.keys(users).map(
               (key) =>
+                //  eslint-disable-next-line eqeqeq
                 users[key].email != user.email && (
                   <TRD
                     key={key}
