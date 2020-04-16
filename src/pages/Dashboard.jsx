@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Navigation } from 'components';
+import { Navigation, Table, TH } from 'components';
 import db from 'config/firebase';
 import { Global } from 'contexts';
 
@@ -41,95 +41,72 @@ export default function Home() {
       }
     });
   }, []);
+
   useEffect(() => {
     document.title = 'Dashboard';
     if (user.role) {
-      const ref = db.ref('users').orderByChild('role').limitToFirst(15);
+      const ref = db.ref('users').orderByChild('role');
       ref.once('value').then((snapshot) => {
         setUsers(snapshot.val());
       });
     }
   }, [user.role]);
+
   return (
     <Navigation>
-      <div className="mt-16">
-        {user.role ? (
-          <div className="w-full max-w-2xl mx-auto flex flex-col">
-            <div className="-my-2 py-2 overflow-x-auto sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-              <div className="align-middle inline-block min-w-full shadow overflow-hidden sm:rounded-lg border-b border-gray-200">
-                <table className="min-w-full">
-                  <thead>
-                    <tr>
-                      {['Name', 'Role', 'Permissions'].map((elm, i) => (
-                        <TH key={i.toString()}>{elm}</TH>
-                      ))}
-                      {/* <th className="px-6 py-3 border-b border-gray-200 bg-gray-50"></th> */}
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white">
-                    {Object.keys(users).map(
-                      (key) =>
-                        users[key].email != user.email && (
-                          <TRD
-                            key={key}
-                            name={users[key].displayName}
-                            email={users[key].email}
-                            role={users[key].role}
-                            permissions={users[key].permissions}
-                          >
-                            <Pill
-                              active={users[key].permissions.create}
-                              handleClick={() =>
-                                togglePermission(key, 'create')
-                              }
-                            >
-                              create
-                            </Pill>
-                            <Pill
-                              active={users[key].permissions.read}
-                              handleClick={() => togglePermission(key, 'read')}
-                            >
-                              read
-                            </Pill>
-                            <Pill
-                              active={users[key].permissions.update}
-                              handleClick={() =>
-                                togglePermission(key, 'update')
-                              }
-                            >
-                              update
-                            </Pill>
-                            <Pill
-                              active={users[key].permissions.delete}
-                              handleClick={() =>
-                                togglePermission(key, 'delete')
-                              }
-                            >
-                              delete
-                            </Pill>
-                          </TRD>
-                        )
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="text-center">
-            {"You don't have permissions to access this page."}
-          </div>
-        )}
-      </div>
+      {user.role ? (
+        <Table>
+          <thead>
+            <tr>
+              {['Name', 'Role', 'Permissions'].map((elm, i) => (
+                <TH key={i.toString()}>{elm}</TH>
+              ))}
+              {/* <th className="px-6 py-3 border-b border-gray-200 bg-gray-50"></th> */}
+            </tr>
+          </thead>
+          <tbody className="bg-white">
+            {Object.keys(users).map(
+              (key) =>
+                users[key].email != user.email && (
+                  <TRD
+                    key={key}
+                    name={users[key].displayName}
+                    email={users[key].email}
+                    role={users[key].role}
+                    permissions={users[key].permissions}
+                  >
+                    <Pill
+                      active={users[key].permissions.create}
+                      handleClick={() => togglePermission(key, 'create')}
+                    >
+                      create
+                    </Pill>
+                    <Pill
+                      active={users[key].permissions.read}
+                      handleClick={() => togglePermission(key, 'read')}
+                    >
+                      read
+                    </Pill>
+                    <Pill
+                      active={users[key].permissions.delete}
+                      handleClick={() => togglePermission(key, 'delete')}
+                    >
+                      delete
+                    </Pill>
+                  </TRD>
+                )
+            )}
+          </tbody>
+        </Table>
+      ) : (
+        <div className="text-center">
+          {"You don't have permissions to access this page."}
+        </div>
+      )}
     </Navigation>
   );
 }
 
-const TH = ({ children }) => (
-  <th className="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
-    {children}
-  </th>
-);
 const TRD = ({ email, name, role, children }) => (
   <tr>
     <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
@@ -137,7 +114,7 @@ const TRD = ({ email, name, role, children }) => (
         <div className="flex-shrink-0 h-10 w-10">
           <img
             className="h-10 w-10 rounded-full"
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+            src="https://toppng.com/uploads/preview/user-account-management-logo-user-icon-11562867145a56rus2zwu.png"
             alt=""
           />
         </div>

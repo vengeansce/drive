@@ -41,13 +41,23 @@ export default function Login() {
             return { user, displayName };
           })
           .then(({ user, displayName }) => {
-            // db.ref('users/' + user.uid).set({ role: 2, email: user.email, displayName }); //Hapus user
+            // db.ref('users/' + user.uid).set({
+            //   permissions: {
+            //     create: true,
+            //     read: true,
+            //     delete: true,
+            //   },
+            //   role: 2,
+            //   email: user.email,
+            //   displayName,
+            // }); //Hapus user
+
             // db.ref('users/' + user.uid).set({ role: 1, email: user.email, displayName }); //Olah permission
+
             db.ref('users/' + user.uid).set({
               permissions: {
                 create: false,
                 read: false,
-                update: false,
                 delete: false,
               },
               role: 0,
